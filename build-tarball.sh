@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2024-2025 Free Software Foundation, Inc.
+# Copyright (C) 2024-2026 Free Software Foundation, Inc.
 #
 # This file is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published
@@ -33,7 +33,7 @@ cd "$package"
 # Force use of the newest gnulib.
 rm -f .gitmodules
 
-./autopull.sh --one-time
+./autopull.sh
 
 # Fetch extra files and generate files (uses packages wget, python3, automake, autoconf, m4).
 date --utc --iso-8601 > .tarball-version
