@@ -574,10 +574,6 @@ jobs:
       fail-fast: false
       matrix:
         bitness: [32, 64]
-        # Can't get the 32-bit build working: It produces an error
-        # child_info_fork::abort: \??\C:\cygwin\bin\cyggc-1.dll: Loaded to different address: parent(0x6F7D0000) != child(0x66240000)
-        exclude:
-          - bitness: 32
     runs-on: windows-2022
     defaults:
       run:
@@ -620,7 +616,7 @@ jobs:
           wget -O gc-8.2.8.tar.gz https://www.hboehm.info/gc/gc_source/gc-8.2.8.tar.gz
           export BDW_GC_CFLAGS=" "
           export BDW_GC_LIBS="-lgc"
-          ./build-on.sh '${{ env.package }}' '' 'make' '/usr' 'gc-8.2.8'
+          ./build-on.sh '${{ env.package }}' '--disable-shared' 'make' '/usr' 'gc-8.2.8'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
       - if: ${{ always() }}
