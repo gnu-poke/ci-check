@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2024-2025 Free Software Foundation, Inc.
+# Copyright (C) 2024-2026 Free Software Foundation, Inc.
 #
 # This file is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published
@@ -21,6 +21,8 @@
 package="$1"
 configure_options="$2"
 make="$3"
+prefix="$4"
+prerequisites="$5"
 
 set -x
 
@@ -28,6 +30,16 @@ case "$configure_options" in
   --host=riscv*) cross_compiling=true ;;
   *)             cross_compiling=false ;;
 esac
+
+# Build and install the prerequisites.
+for prereq in $prerequisites; do
+  tar xfz $prereq.tar.gz
+  cd $prereq
+  ./configure $configure_options --prefix="$prefix" > log1 2>&1; rc=$?; cat log1; test $rc = 0 || exit 1
+  $make > log2 2>&1; rc=$?; cat log2; test $rc = 0 || exit 1
+  $make install > log4 2>&1; rc=$?; cat log4; test $rc = 0 || exit 1
+  cd ..
+done
 
 # Unpack the tarball.
 tarfile=`echo "$package"-*.tar.gz`
