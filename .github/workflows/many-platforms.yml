@@ -241,12 +241,12 @@ jobs:
             pwd
             : "Install Alpine Linux packages"
             : "List of packages: https://pkgs.alpinelinux.org/packages"
-            apk add make gcc musl-dev libgc++
+            apk add make gcc musl-dev gc-dev
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
-            export BDW_GC_CFLAGS=
-            export BDW_GC_LIBS="-L/usr/local/lib -lgc"
+            export BDW_GC_CFLAGS=" "
+            export BDW_GC_LIBS="-lgc"
             ./build-on.sh '${{ env.package }}' '' 'make' '/usr/local' ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
@@ -334,11 +334,11 @@ jobs:
             pwd
             : "Install FreeBSD packages"
             : "List of packages: https://ports.freebsd.org/cgi/ports.cgi"
-            pkg install -y boehm-gc-threaded
+            pkg install -y boehm-gc
             ls -l
             export CPPFLAGS="-I/usr/local/include -Wall"
             export LDFLAGS="-L/usr/local/lib"
-            export BDW_GC_CFLAGS=
+            export BDW_GC_CFLAGS="-I/usr/local/include"
             export BDW_GC_LIBS="-L/usr/local/lib -lgc"
             ./build-on.sh '${{ env.package }}' '' 'make' '/usr/local' ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
@@ -389,7 +389,7 @@ jobs:
             ls -l
             export CPPFLAGS="-I/usr/pkg/include -Wall"
             export LDFLAGS="-L/usr/pkg/lib"
-            export BDW_GC_CFLAGS=
+            export BDW_GC_CFLAGS="-I/usr/pkg/include"
             export BDW_GC_LIBS="-L/usr/pkg/lib -lgc"
             ./build-on.sh '${{ env.package }}' '' 'make' '/usr/pkg' ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
@@ -493,8 +493,8 @@ jobs:
             ls -l
             export CPPFLAGS="-Wall"
             export CC="gcc -m64"
-            export BDW_GC_CFLAGS=
-            export BDW_GC_LIBS="-lgc"
+            export BDW_GC_CFLAGS=" "
+            export BDW_GC_LIBS="-lbgc"
             ./build-on.sh '${{ env.package }}' '' 'make' "$HOME" ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
@@ -543,7 +543,7 @@ jobs:
             ls -l
             export CPPFLAGS="-Wall"
             wget -O gc-8.2.8.tar.gz https://www.hboehm.info/gc/gc_source/gc-8.2.8.tar.gz
-            export BDW_GC_CFLAGS=
+            export BDW_GC_CFLAGS="-I$HOME/include"
             export BDW_GC_LIBS="-L$HOME/lib -lgc"
             ./build-on.sh '${{ env.package }}' '' 'gmake' "$HOME" 'gc-8.2.8'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
@@ -591,7 +591,7 @@ jobs:
           platform: ${{ matrix.bitness == 32 && 'x86' || 'x86_64' }}
           # Install Cygwin packages.
           # List of packages: https://cygwin.com/packages/package_list.html
-          packages: gcc-core make
+          packages: wget gcc-core make
       - name: cygcheck
         run: cygcheck -V
       - name: cygcheck
@@ -609,7 +609,7 @@ jobs:
         run: |
           export CPPFLAGS="-Wall"
           wget -O gc-8.2.8.tar.gz https://www.hboehm.info/gc/gc_source/gc-8.2.8.tar.gz
-          export BDW_GC_CFLAGS=
+          export BDW_GC_CFLAGS=" "
           export BDW_GC_LIBS="-lgc"
           ./build-on.sh '${{ env.package }}' '' 'make' '/usr' 'gc-8.2.8'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
@@ -779,7 +779,7 @@ jobs:
           export AR="`pwd`/ar-lib lib"
           export RANLIB=":"
           wget -O gc-8.2.8.tar.gz https://www.hboehm.info/gc/gc_source/gc-8.2.8.tar.gz
-          ./build-on.sh '${{ env.package }}' '--host=${{ matrix.bitness == 32 && 'i686' || 'x86_64' }}-w64-mingw32' 'make' '/usr/local/msvc${{ matrix.bitness }}' 'gc-8.2.8'
+          ./build-on.sh '${{ env.package }}' '--host=${{ matrix.bitness == 32 && 'i686' || 'x86_64' }}-w64-mingw32 --disable-shared' 'make' '/usr/local/msvc${{ matrix.bitness }}' 'gc-8.2.8'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
       - if: ${{ always() }}
@@ -906,10 +906,14 @@ jobs:
       - run: sudo apt update; sudo apt install gcc-riscv64-linux-gnu
       - run: |
           pwd
-          export CPPFLAGS="-Wall"
+          export CPPFLAGS="-I$HOME/include -Wall"
+          export LDFLAGS="-L$HOME/lib"
           export CC="riscv64-linux-gnu-gcc"
+          wget -O libatomic_ops-7.10.0.tar.gz https://github.com/bdwgc/libatomic_ops/releases/download/v7.10.0/libatomic_ops-7.10.0.tar.gz
           wget -O gc-8.2.8.tar.gz https://www.hboehm.info/gc/gc_source/gc-8.2.8.tar.gz
-          ./build-on.sh '${{ env.package }}' '--host=riscv64-linux-gnu' 'make' "$HOME" 'gc-8.2.8'
+          export BDW_GC_CFLAGS="-I$HOME/include"
+          export BDW_GC_LIBS="-L$HOME/lib -lgc"
+          ./build-on.sh '${{ env.package }}' '--host=riscv64-linux-gnu' 'make' "$HOME" 'libatomic_ops-7.10.0 gc-8.2.8'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
       - if: ${{ always() }}
