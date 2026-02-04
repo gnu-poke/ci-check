@@ -440,6 +440,7 @@ jobs:
             : "List of packages: https://cdn.openbsd.org/pub/OpenBSD/7.7/packages/amd64/"
             pkg_add gmake boehm-gc
             export PATH=/usr/local/bin:$PATH
+            export MAKE=gmake
             ls -l
             export CPPFLAGS="-I/usr/local/include -Wall"
             export LDFLAGS="-L/usr/local/lib"
