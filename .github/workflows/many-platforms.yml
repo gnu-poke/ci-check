@@ -196,6 +196,8 @@ jobs:
             : "                  https://repo.almalinux.org/almalinux/9/CRB/x86_64/os/Packages/"
             : "                  https://repo.almalinux.org/almalinux/9/devel/x86_64/os/Packages/"
             : "Explanation: https://wiki.almalinux.org/repos/AlmaLinux.html"
+            yum -y install epel-release
+            crb enable
             yum -y install make gcc diffutils gc-devel
             cd /work
             ls -l
@@ -243,6 +245,8 @@ jobs:
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
+            export BDW_GC_CFLAGS=
+            export BDW_GC_LIBS="-L/usr/local/lib -lgc"
             ./build-on.sh '${{ env.package }}' '' 'make' '/usr/local' ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
@@ -334,6 +338,8 @@ jobs:
             ls -l
             export CPPFLAGS="-I/usr/local/include -Wall"
             export LDFLAGS="-L/usr/local/lib"
+            export BDW_GC_CFLAGS=
+            export BDW_GC_LIBS="-L/usr/local/lib -lgc"
             ./build-on.sh '${{ env.package }}' '' 'make' '/usr/local' ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
@@ -383,6 +389,8 @@ jobs:
             ls -l
             export CPPFLAGS="-I/usr/pkg/include -Wall"
             export LDFLAGS="-L/usr/pkg/lib"
+            export BDW_GC_CFLAGS=
+            export BDW_GC_LIBS="-L/usr/pkg/lib -lgc"
             ./build-on.sh '${{ env.package }}' '' 'make' '/usr/pkg' ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
@@ -484,6 +492,8 @@ jobs:
             ls -l
             export CPPFLAGS="-Wall"
             export CC="gcc -m64"
+            export BDW_GC_CFLAGS=
+            export BDW_GC_LIBS="-lgc"
             ./build-on.sh '${{ env.package }}' '' 'make' "$HOME" ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
@@ -532,6 +542,8 @@ jobs:
             ls -l
             export CPPFLAGS="-Wall"
             wget -O gc-8.2.8.tar.gz https://www.hboehm.info/gc/gc_source/gc-8.2.8.tar.gz
+            export BDW_GC_CFLAGS=
+            export BDW_GC_LIBS="-L$HOME/lib -lgc"
             ./build-on.sh '${{ env.package }}' '' 'gmake' "$HOME" 'gc-8.2.8'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
@@ -578,7 +590,7 @@ jobs:
           platform: ${{ matrix.bitness == 32 && 'x86' || 'x86_64' }}
           # Install Cygwin packages.
           # List of packages: https://cygwin.com/packages/package_list.html
-          packages: gcc-core make libgc-devel
+          packages: gcc-core make
       - name: cygcheck
         run: cygcheck -V
       - name: cygcheck
@@ -595,7 +607,10 @@ jobs:
       - name: Build in Cygwin
         run: |
           export CPPFLAGS="-Wall"
-          ./build-on.sh '${{ env.package }}' '' 'make' '/usr' ''
+          wget -O gc-8.2.8.tar.gz https://www.hboehm.info/gc/gc_source/gc-8.2.8.tar.gz
+          export BDW_GC_CFLAGS=
+          export BDW_GC_LIBS="-lgc"
+          ./build-on.sh '${{ env.package }}' '' 'make' '/usr' 'gc-8.2.8'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
       - if: ${{ always() }}
@@ -755,7 +770,7 @@ jobs:
           export INCLUDE LIB
           : "Possible values are _WIN32_WINNT_WINXP, _WIN32_WINNT_VISTA, _WIN32_WINNT_WIN7"
           win32_target=_WIN32_WINNT_WINXP
-          export CPPFLAGS="-D_WIN32_WINNT=$win32_target"
+          export CPPFLAGS="-D_WIN32_WINNT=$win32_target -DDONT_USE_USER32_DLL"
           export CC="`pwd`/compile cl -nologo"; export CFLAGS="-MD"
           export LD="link"
           export NM="dumpbin -symbols"
