@@ -292,7 +292,8 @@ jobs:
       - run: brew install bdw-gc readline
       - run: |
           pwd
-          export CPPFLAGS="-Wall"
+          export CPPFLAGS="-I${HOMEBREW_PREFIX-/usr/local}/opt/readline/include -Wall"
+          export LDFLAGS="L${HOMEBREW_PREFIX-/usr/local}/opt/readline/lib"
           ./build-on.sh '${{ env.package }}' '' 'make' "$HOME" ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
@@ -922,7 +923,7 @@ jobs:
           export BDW_GC_LIBS="-L$HOME/lib -lgc"
           wget -O ncurses-6.6.tar.gz https://ftp.gnu.org/gnu/ncurses/ncurses-6.6.tar.gz
           wget -O readline-8.3.tar.gz https://ftp.gnu.org/gnu/readline/readline-8.3.tar.gz
-          ./build-on.sh '${{ env.package }}' '--host=riscv64-linux-gnu' 'make' "$HOME" 'libatomic_ops-7.10.0 gc-8.2.8 ncurses-6.6 readline-8.3'
+          ./build-on.sh '${{ env.package }}' '--host=riscv64-linux-gnu --disable-stripping' 'make' "$HOME" 'libatomic_ops-7.10.0 gc-8.2.8 ncurses-6.6 readline-8.3'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
       - if: ${{ always() }}
