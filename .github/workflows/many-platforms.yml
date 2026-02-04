@@ -337,13 +337,14 @@ jobs:
             pwd
             : "Install FreeBSD packages"
             : "List of packages: https://ports.freebsd.org/cgi/ports.cgi"
-            pkg install -y boehm-gc readline
+            pkg install -y readline
             ls -l
             export CPPFLAGS="-I/usr/local/include -Wall"
             export LDFLAGS="-L/usr/local/lib"
+            wget -O gc-8.2.8.tar.gz https://www.hboehm.info/gc/gc_source/gc-8.2.8.tar.gz
             export BDW_GC_CFLAGS="-I/usr/local/include"
             export BDW_GC_LIBS="-L/usr/local/lib -lgc"
-            ./build-on.sh '${{ env.package }}' '' 'make' '/usr/local' ''
+            ./build-on.sh '${{ env.package }}' '' 'make' '/usr/local' 'gc-8.2.8'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
       - if: ${{ always() }}
