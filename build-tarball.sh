@@ -28,6 +28,10 @@ set -e
 # Fetch sources (uses package 'git').
 git clone --depth 1 https://git.savannah.gnu.org/git/"$package".git
 git clone --depth 1 https://git.savannah.gnu.org/git/gnulib.git
+
+# Apply patches.
+(cd "$package" && patch -p0 < ../patches/mingw.diff)
+
 export GNULIB_SRCDIR=`pwd`/gnulib
 cd "$package"
 # Force use of the newest gnulib.

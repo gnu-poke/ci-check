@@ -1,0 +1,18 @@
+diff --git jitter/jitterc/jitterc-generate.c jitter/jitterc/jitterc-generate.c
+index 1489c94..30b38be 100644
+--- jitter/jitterc/jitterc-generate.c
++++ jitter/jitterc/jitterc-generate.c
+@@ -4855,11 +4855,13 @@ jitterc_set_output_timestamps (const struct jitterc_vm *vm)
+       sprintf (pathname, "%s/%s-%s",
+                vm->directory, vm->lower_case_prefix, basename);
+ 
++#if !defined _WIN32
+       /* Change timestamp. */
+       const struct timeval timeval_now_twice[2] = {timeval_now, timeval_now};
+       int result = utimes (pathname, timeval_now_twice);
+       if (result != 0)
+         printf("WARNING: failed to change timestamps for %s\n", pathname);
++#endif
+ 
+       /* Free heap space. */
+       free (pathname);
