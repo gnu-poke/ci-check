@@ -29,15 +29,15 @@ set -e
 git clone --depth 1 https://git.savannah.gnu.org/git/"$package".git
 git clone --depth 1 https://git.savannah.gnu.org/git/gnulib.git
 
-# Apply patches.
-(cd "$package" && patch -p0 < ../patches/mingw.diff)
-
 export GNULIB_SRCDIR=`pwd`/gnulib
 cd "$package"
 # Force use of the newest gnulib.
 rm -f .gitmodules
 
 ./autopull.sh
+
+# Apply patches.
+patch -p0 < ../patches/mingw.diff
 
 # Fetch extra files and generate files (uses packages wget, python3, automake, autoconf, m4).
 date --utc --iso-8601 > .tarball-version
