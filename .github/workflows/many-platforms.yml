@@ -149,7 +149,7 @@ jobs:
             sed -i -e 's|^mirrorlist=|#mirrorlist=|' -e 's|^#baseurl=http://mirror\.centos\.org|baseurl=http://vault.centos.org|' /etc/yum.repos.d/CentOS-Base.repo
             : "Install CentOS Linux packages"
             : "List of packages: http://vault.centos.org/centos/7/os/x86_64/Packages/"
-            yum -y install make gcc gc-devel
+            yum -y install make gcc gc-devel readline-devel
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
@@ -198,7 +198,7 @@ jobs:
             : "Explanation: https://wiki.almalinux.org/repos/AlmaLinux.html"
             yum -y install epel-release
             crb enable
-            yum -y install make gcc diffutils gc-devel
+            yum -y install make gcc diffutils gc-devel readline-devel
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
@@ -241,7 +241,7 @@ jobs:
             pwd
             : "Install Alpine Linux packages"
             : "List of packages: https://pkgs.alpinelinux.org/packages"
-            apk add make gcc musl-dev gc-dev
+            apk add make gcc musl-dev gc-dev readline-dev
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
@@ -286,7 +286,7 @@ jobs:
       - run: pwd
       # Install Homebrew packages.
       # List of packages: https://formulae.brew.sh/
-      - run: brew install bdw-gc
+      - run: brew install bdw-gc readline
       - run: |
           pwd
           export CPPFLAGS="-Wall"
@@ -334,7 +334,7 @@ jobs:
             pwd
             : "Install FreeBSD packages"
             : "List of packages: https://ports.freebsd.org/cgi/ports.cgi"
-            pkg install -y boehm-gc
+            pkg install -y boehm-gc readline
             ls -l
             export CPPFLAGS="-I/usr/local/include -Wall"
             export LDFLAGS="-L/usr/local/lib"
@@ -382,7 +382,7 @@ jobs:
             pwd
             : "Install NetBSD packages"
             : "List of packages: https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/index-all.html"
-            /usr/sbin/pkg_add boehm-gc
+            /usr/sbin/pkg_add boehm-gc readline
             : "or"
             : /usr/sbin/pkg_add pkgin
             : pkgin install ...
@@ -438,7 +438,7 @@ jobs:
             pwd
             : "Install OpenBSD packages"
             : "List of packages: https://cdn.openbsd.org/pub/OpenBSD/7.7/packages/amd64/"
-            pkg_add gmake boehm-gc
+            pkg_add gmake boehm-gc readline
             export PATH=/usr/local/bin:$PATH
             export MAKE=gmake
             ls -l
@@ -483,7 +483,7 @@ jobs:
           prepare: |
             : "Install Solaris packages"
             : "List of packages: http://pkg.oracle.com/solaris/release/en/index.shtml"
-            pkg install library/gc; ret=$?; test $ret = 0 || test $ret = 4
+            pkg install library/gc library/readline; ret=$?; test $ret = 0 || test $ret = 4
           run: |
             set -x
             uname -a
@@ -533,7 +533,8 @@ jobs:
             : "List of packages: https://pkg.omnios.org/r151048/core/en/index.shtml"
             pkg install \
                 developer/gcc13 developer/object-file system/header system/library/math \
-                developer/build/gnu-make
+                developer/build/gnu-make \
+                library/readline
           run: |
             set -x
             uname -a
@@ -595,7 +596,7 @@ jobs:
           platform: ${{ matrix.bitness == 32 && 'x86' || 'x86_64' }}
           # Install Cygwin packages.
           # List of packages: https://cygwin.com/packages/package_list.html
-          packages: wget gcc-core make
+          packages: wget gcc-core make libreadline-devel
       - name: cygcheck
         run: cygcheck -V
       - name: cygcheck
@@ -661,7 +662,7 @@ jobs:
           platform: x86_64
           # Install Cygwin packages.
           # List of packages: https://cygwin.com/packages/package_list.html
-          packages: ${{ matrix.bitness == 32 && 'mingw64-i686-gcc-core mingw64-i686-headers mingw64-i686-runtime mingw64-i686-gc' || 'mingw64-x86_64-gcc-core mingw64-x86_64-headers mingw64-x86_64-runtime mingw64-x86_64-gc' }} make
+          packages: ${{ matrix.bitness == 32 && 'mingw64-i686-gcc-core mingw64-i686-headers mingw64-i686-runtime mingw64-i686-gc mingw64-i686-readline' || 'mingw64-x86_64-gcc-core mingw64-x86_64-headers mingw64-x86_64-runtime mingw64-x86_64-gc mingw64-x86_64-readline' }} make
       - name: cygcheck
         run: cygcheck -V
       - name: cygcheck
@@ -869,7 +870,7 @@ jobs:
             pwd
             : "Install Debian packages."
             : "List of packages: https://packages.debian.org/"
-            apt update; apt -y install libgc-dev
+            apt update; apt -y install libgc-dev libreadline-dev
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
@@ -919,7 +920,9 @@ jobs:
           wget -O gc-8.2.8.tar.gz https://www.hboehm.info/gc/gc_source/gc-8.2.8.tar.gz
           export BDW_GC_CFLAGS="-I$HOME/include"
           export BDW_GC_LIBS="-L$HOME/lib -lgc"
-          ./build-on.sh '${{ env.package }}' '--host=riscv64-linux-gnu' 'make' "$HOME" 'libatomic_ops-7.10.0 gc-8.2.8'
+          wget -O ncurses-6.6.tar.gz https://ftp.gnu.org/gnu/ncurses/ncurses-6.6.tar.gz
+          wget -O readline-8.3.tar.gz https://ftp.gnu.org/gnu/readline/readline-8.3.tar.gz
+          ./build-on.sh '${{ env.package }}' '--host=riscv64-linux-gnu' 'make' "$HOME" 'libatomic_ops-7.10.0 gc-8.2.8 ncurses-6.6 readline-8.3'
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
       - if: ${{ always() }}
