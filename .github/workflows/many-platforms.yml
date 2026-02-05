@@ -293,7 +293,7 @@ jobs:
       - run: |
           pwd
           export CPPFLAGS="-I${HOMEBREW_PREFIX-/usr/local}/opt/readline/include -Wall"
-          export LDFLAGS="L${HOMEBREW_PREFIX-/usr/local}/opt/readline/lib"
+          export LDFLAGS="-L${HOMEBREW_PREFIX-/usr/local}/opt/readline/lib"
           ./build-on.sh '${{ env.package }}' '' 'make' "$HOME" ''
       # Doc: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
       #      https://github.com/actions/upload-artifact?tab=readme-ov-file#usage
