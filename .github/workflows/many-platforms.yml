@@ -338,7 +338,7 @@ jobs:
             pwd
             : "Install FreeBSD packages"
             : "List of packages: https://ports.freebsd.org/cgi/ports.cgi"
-            pkg install -y readline
+            pkg install -y wget readline
             ls -l
             export CPPFLAGS="-I/usr/local/include -Wall"
             export LDFLAGS="-L/usr/local/lib"
