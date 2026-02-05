@@ -104,7 +104,7 @@ jobs:
       - run: pwd
       # Install Ubuntu packages.
       # List of packages: https://packages.ubuntu.com/
-      - run: sudo apt update; sudo apt install libgc-dev
+      - run: sudo apt update; sudo apt install libgc-dev dejagnu
       - run: |
           pwd
           export CPPFLAGS="-Wall"
@@ -149,7 +149,7 @@ jobs:
             sed -i -e 's|^mirrorlist=|#mirrorlist=|' -e 's|^#baseurl=http://mirror\.centos\.org|baseurl=http://vault.centos.org|' /etc/yum.repos.d/CentOS-Base.repo
             : "Install CentOS Linux packages"
             : "List of packages: http://vault.centos.org/centos/7/os/x86_64/Packages/"
-            yum -y install wget make gcc readline-devel
+            yum -y install wget make gcc readline-devel dejagnu
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
@@ -201,7 +201,7 @@ jobs:
             : "Explanation: https://wiki.almalinux.org/repos/AlmaLinux.html"
             yum -y install epel-release
             crb enable
-            yum -y install make gcc diffutils gc-devel readline-devel
+            yum -y install make gcc diffutils gc-devel readline-devel dejagnu
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
@@ -244,7 +244,7 @@ jobs:
             pwd
             : "Install Alpine Linux packages"
             : "List of packages: https://pkgs.alpinelinux.org/packages"
-            apk add make gcc musl-dev gc-dev readline-dev
+            apk add make gcc musl-dev gc-dev readline-dev dejagnu
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
@@ -289,7 +289,7 @@ jobs:
       - run: pwd
       # Install Homebrew packages.
       # List of packages: https://formulae.brew.sh/
-      - run: brew install bdw-gc readline
+      - run: brew install bdw-gc readline deja-gnu
       - run: |
           pwd
           export CPPFLAGS="-I${HOMEBREW_PREFIX-/usr/local}/opt/readline/include -Wall"
@@ -338,7 +338,7 @@ jobs:
             pwd
             : "Install FreeBSD packages"
             : "List of packages: https://ports.freebsd.org/cgi/ports.cgi"
-            pkg install -y wget readline
+            pkg install -y wget readline dejagnu
             ls -l
             export CPPFLAGS="-I/usr/local/include -Wall"
             export LDFLAGS="-L/usr/local/lib"
@@ -387,7 +387,7 @@ jobs:
             pwd
             : "Install NetBSD packages"
             : "List of packages: https://ftp.netbsd.org/pub/pkgsrc/current/pkgsrc/index-all.html"
-            /usr/sbin/pkg_add boehm-gc readline
+            /usr/sbin/pkg_add boehm-gc readline dejagnu
             : "or"
             : /usr/sbin/pkg_add pkgin
             : pkgin install ...
@@ -443,7 +443,7 @@ jobs:
             pwd
             : "Install OpenBSD packages"
             : "List of packages: https://cdn.openbsd.org/pub/OpenBSD/7.7/packages/amd64/"
-            pkg_add gmake boehm-gc readline
+            pkg_add gmake boehm-gc readline dejagnu
             export PATH=/usr/local/bin:$PATH
             export MAKE=gmake
             ls -l
@@ -488,7 +488,7 @@ jobs:
           prepare: |
             : "Install Solaris packages"
             : "List of packages: http://pkg.oracle.com/solaris/release/en/index.shtml"
-            pkg install library/gc library/readline; ret=$?; test $ret = 0 || test $ret = 4
+            pkg install library/gc library/readline developer/test/dejagnu; ret=$?; test $ret = 0 || test $ret = 4
           run: |
             set -x
             uname -a
@@ -597,7 +597,7 @@ jobs:
           platform: ${{ matrix.bitness == 32 && 'x86' || 'x86_64' }}
           # Install Cygwin packages.
           # List of packages: https://cygwin.com/packages/package_list.html
-          packages: wget gcc-core make libreadline-devel
+          packages: wget gcc-core make libreadline-devel dejagnu
       - name: cygcheck
         run: cygcheck -V
       - name: cygcheck
@@ -663,7 +663,7 @@ jobs:
           platform: x86_64
           # Install Cygwin packages.
           # List of packages: https://cygwin.com/packages/package_list.html
-          packages: ${{ matrix.bitness == 32 && 'mingw64-i686-gcc-core mingw64-i686-headers mingw64-i686-runtime mingw64-i686-gc mingw64-i686-readline' || 'mingw64-x86_64-gcc-core mingw64-x86_64-headers mingw64-x86_64-runtime mingw64-x86_64-gc mingw64-x86_64-readline' }} make
+          packages: ${{ matrix.bitness == 32 && 'mingw64-i686-gcc-core mingw64-i686-headers mingw64-i686-runtime mingw64-i686-gc mingw64-i686-readline' || 'mingw64-x86_64-gcc-core mingw64-x86_64-headers mingw64-x86_64-runtime mingw64-x86_64-gc mingw64-x86_64-readline' }} make dejagnu
       - name: cygcheck
         run: cygcheck -V
       - name: cygcheck
@@ -822,7 +822,7 @@ jobs:
       - run: pwd
       # Install Ubuntu packages.
       # List of packages: https://packages.ubuntu.com/
-      - run: sudo apt update; sudo apt install libgc-dev
+      - run: sudo apt update; sudo apt install libgc-dev dejagnu
       - run: |
           pwd
           export CPPFLAGS="-Wall"
@@ -871,7 +871,7 @@ jobs:
             pwd
             : "Install Debian packages."
             : "List of packages: https://packages.debian.org/"
-            apt update; apt -y install libgc-dev libreadline-dev
+            apt update; apt -y install libgc-dev libreadline-dev dejagnu
             cd /work
             ls -l
             export CPPFLAGS="-Wall"
