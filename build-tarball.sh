@@ -37,7 +37,7 @@ rm -f .gitmodules
 ./autopull.sh
 
 # Apply patches.
-patch -p0 < ../patches/mingw.diff
+#patch -p0 < ../patches/...
 
 # Fetch extra files and generate files (uses packages wget, python3, automake, autoconf, m4).
 date --utc --iso-8601 > .tarball-version
