@@ -825,7 +825,7 @@ jobs:
       - run: pwd
       # Install Ubuntu packages.
       # List of packages: https://packages.ubuntu.com/
-      - run: sudo apt update; sudo apt install libgc-dev dejagnu
+      - run: sudo apt update; sudo apt install libgc-dev libreadline-dev dejagnu
       - run: |
           pwd
           export CPPFLAGS="-Wall"
